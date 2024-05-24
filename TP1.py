@@ -190,7 +190,7 @@ def dibujarGrafico():
 
 
 def realizarTabla():
-    global individuos,valObj,porcFitness
+    global individuos,valObj,porcFitness, nombreArchivoExcel
     
     datos_tabla = {
         "Generacion" : [i+1 for i in range(corridas)],
@@ -202,14 +202,15 @@ def realizarTabla():
     }
     df_individuos = pd.DataFrame(datos_tabla)
     
-    with pd.ExcelWriter('ruleta_20.xlsx') as writer:
+    nombreArchivoExcel = nombreArchivoExcel + ".xlsx"
+    with pd.ExcelWriter(nombreArchivoExcel) as writer:
         df_individuos.to_excel(writer, sheet_name = 'Individuos', index = False)
 
 
 #PROGRAMA PRINCIPAL
 #preguntar el numero de individuos y con cuantos genes 
 
-global numGenes,numIndividuos, individuos, valObj, porcFitness,probCrossover, probMutacion, valorMayorGlobal, valorMenorGlobal, menorGlobal, mayorGlobal, corridas, promedioValObjPorCorrida, acumCorridas
+global numGenes,numIndividuos, individuos, valObj, porcFitness,probCrossover, probMutacion, valorMayorGlobal, valorMenorGlobal, menorGlobal, mayorGlobal, corridas, promedioValObjPorCorrida, acumCorridas, nombreArchivoExcel
 numGenes = 30
 numIndividuos = 10
 probCrossover = 0.75
@@ -218,21 +219,25 @@ valorMenorGlobal = 99999
 valorMayorGlobal = 0
 menorGlobal = [0]*numGenes
 mayorGlobal = [0]*numGenes
-corridas = 1000
-minimoFo = [0 for _ in range(corridas)]
-maximoFo = [0 for _ in range(corridas)]
-cromosomasMaximos = [0 for _ in range(corridas)]
-cromosomasMinimos = [0 for _ in range(corridas)]
-
+corridas = 0 #Este valor es modificado en la ejecucion
 acumCorridas = 0
 #Definimos el arreglo de individuos
 individuos = [[0 for i in range(numGenes)] for j in range(numIndividuos)] 
 valObj = [0 for i in range(numIndividuos)]  #para guardar el valor de la func obj de cada individuo 
 porcFitness = [0 for i in range(numIndividuos)] #Para guaradar los valores del porcentaje que brinda la fun fitness para cada indiviuo
 
-#para graficos
-promedioValObjPorCorrida = [0 for _ in range(corridas)]
 
+
+#Incializar los valores que dependen de las corridas
+def inicializarValoresCorridas():
+    global minimoFo, maximoFo, cromosomasMaximos, cromosomasMinimos, promedioValObjPorCorrida, corridas
+    
+    minimoFo = [0 for _ in range(corridas)]
+    maximoFo = [0 for _ in range(corridas)]
+    cromosomasMaximos = [0 for _ in range(corridas)]
+    cromosomasMinimos = [0 for _ in range(corridas)]
+    #para graficos
+    promedioValObjPorCorrida = [0 for _ in range(corridas)]
 #OPCION A:
 #inicializar -> funcion objetivo -> funcion fitness -> seleccion (ruleta) -> crossover (1 punto) -> mutacion 
 
@@ -247,25 +252,41 @@ promedioValObjPorCorrida = [0 for _ in range(corridas)]
 
 
 #Ejecución Opcion A
-inicializarPoblacion()
-op = "RE"
 
-for i in range(corridas):
-    print("-----------------",i,"-------------------------")
-    funcionFitness()
-    guardarDatosPorCorrida(i)
-    if (op == "R"):
-        ruleta()
-    elif ( op == "T"):
-        torneo()
-    elif (op == "RE"):
-        guardarElitismo(2)
-        ruleta()
-    crossover()
-    mutacionBinaria()
-    if (op == "RE"):
-        pegarElitismo(2)
-        
-mostrarDatosGlobal()
-dibujarGrafico()
-realizarTabla()
+op = ""
+op=input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n ")
+while op != "R" and op != "T" and op != "RE" and op != "fin":
+    print("Opcion no valida")
+    op=input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n ")
+
+while op !="fin":
+    nombreArchivoExcel = input("Ingrese el nombre de la tabla a exportar:\n")
+    corridas = int(input("Ingrese el numero de corridas que desea Realizar: \n"))
+    inicializarValoresCorridas()
+    inicializarPoblacion()
+    for i in range(corridas):
+        print("-----------------",i,"-------------------------")
+        funcionFitness()
+        guardarDatosPorCorrida(i)
+        if (op == "R"):
+            ruleta()
+        elif ( op == "T"):
+            torneo()
+        elif (op == "RE"):
+            guardarElitismo(2)
+            ruleta()
+        crossover()
+        mutacionBinaria()
+        if (op == "RE"):
+            pegarElitismo(2)
+            
+    mostrarDatosGlobal()
+    dibujarGrafico()
+    realizarTabla()
+    op=input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n ")
+    while op != "R" and op != "T" and op != "RE" and op != "fin":
+        print("Opcion no valida")
+        op=input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n ")
+
+
+
