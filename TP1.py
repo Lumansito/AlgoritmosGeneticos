@@ -254,12 +254,12 @@ def inicializarValoresCorridas():
 #Ejecución Opcion A
 
 op = ""
-op=input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n ")
-while op != "R" and op != "T" and op != "RE" and op != "fin":
+op = input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n F - para terminar\n").upper()
+while op.upper() != "R" and op.upper() != "T" and op.upper() != "RE" and op.upper() != "F":
     print("Opcion no valida")
-    op=input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n ")
+    op = input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n F - para terminar\n").upper()
 
-while op !="fin":
+while op.upper() !="F":
     nombreArchivoExcel = input("Ingrese el nombre de la tabla a exportar:\n")
     corridas = int(input("Ingrese el numero de corridas que desea Realizar: \n"))
     inicializarValoresCorridas()
@@ -283,10 +283,11 @@ while op !="fin":
     mostrarDatosGlobal()
     dibujarGrafico()
     realizarTabla()
-    op=input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n ")
-    while op != "R" and op != "T" and op != "RE" and op != "fin":
+    op = input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n F - para terminar\n").upper()
+    while op.upper() != "R" and op.upper() != "T" and op.upper() != "RE" and op.upper() != "F":
         print("Opcion no valida")
-        op=input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n ")
+        op = input( "Ingrese la opcion de seleccion \n R-Ruleta\n T- Torneo\n RE- Ruleta-Elitismo\n F - para terminar\n").upper()
+
 
 
 
