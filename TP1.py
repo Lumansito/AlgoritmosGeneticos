@@ -106,7 +106,7 @@ def torneo():
     individuos = hijos
 
 def guardarDatosPorCorrida(numCorrida):
-    global menorGlobal, mayorGlobal, valorMayorGlobal, valorMenorGlobal, acumCorridas,maximoFo,minimoFo,cromosomasMaximos,cromosomasMinimos
+    global menorGlobal, mayorGlobal, valorMayorGlobal, valorMenorGlobal, acumCorridas,maximoFo,minimoFo,cromosomasMaximos,cromosomasMinimos, promedioValObjPorCorrida
     
     valorMayor = 0
     valorMenor = 9999
@@ -173,6 +173,9 @@ def mutacionBinaria():
             
 
 def dibujarGrafico():
+
+    global promedioValObjPorCorrida, corridas
+
     numCorridas=[0 for _ in range(corridas)]
 
     for i in range(corridas):
@@ -210,7 +213,7 @@ def realizarTabla():
 #PROGRAMA PRINCIPAL
 #preguntar el numero de individuos y con cuantos genes 
 
-global numGenes,numIndividuos, individuos, valObj, porcFitness,probCrossover, probMutacion, valorMayorGlobal, valorMenorGlobal, menorGlobal, mayorGlobal, corridas, promedioValObjPorCorrida, acumCorridas, nombreArchivoExcel
+global numGenes,numIndividuos, individuos, valObj, porcFitness,probCrossover, probMutacion, valorMayorGlobal, valorMenorGlobal, menorGlobal, mayorGlobal, corridas, promedioValObjPorCorrida, nombreArchivoExcel
 numGenes = 30
 numIndividuos = 10
 probCrossover = 0.75
@@ -220,7 +223,6 @@ valorMayorGlobal = 0
 menorGlobal = [0]*numGenes
 mayorGlobal = [0]*numGenes
 corridas = 0 #Este valor es modificado en la ejecucion
-acumCorridas = 0
 #Definimos el arreglo de individuos
 individuos = [[0 for i in range(numGenes)] for j in range(numIndividuos)] 
 valObj = [0 for i in range(numIndividuos)]  #para guardar el valor de la func obj de cada individuo 
@@ -230,8 +232,9 @@ porcFitness = [0 for i in range(numIndividuos)] #Para guaradar los valores del p
 
 #Incializar los valores que dependen de las corridas
 def inicializarValoresCorridas():
-    global minimoFo, maximoFo, cromosomasMaximos, cromosomasMinimos, promedioValObjPorCorrida, corridas
+    global minimoFo, maximoFo, cromosomasMaximos, cromosomasMinimos, promedioValObjPorCorrida, corridas, acumCorridas
     
+    acumCorridas = 0
     minimoFo = [0 for _ in range(corridas)]
     maximoFo = [0 for _ in range(corridas)]
     cromosomasMaximos = [0 for _ in range(corridas)]
