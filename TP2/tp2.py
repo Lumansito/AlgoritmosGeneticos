@@ -4,6 +4,7 @@ limiteMax= 4200
 
 
 
+
 #creamos un arreglo con todas las combinaciones posibles de 10 elementos
 def cargaArreglo():
     global arregloExhaustivo
@@ -56,7 +57,7 @@ def busquedaGreedy():
     mochila = [0 for _ in range(10)]
     while(indice<10) :
         indiceObjeto=arregloDensidad[indice][1] #indice del objeto que se agrega
-        if(capacidad + objetos[indiceObjeto][0]<limiteMax):
+        if(capacidad + objetos[indiceObjeto][0]<=limiteMax):
             capacidad = capacidad + objetos[indiceObjeto][0]
             valor = valor + objetos[indiceObjeto][1]
             mochila[indiceObjeto] = 1
