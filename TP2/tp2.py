@@ -91,7 +91,7 @@ def busquedaExahustiva(limiteMaxA, arregloX):
     print("\033[94mValor:\033[0m", valorExhaustiva,"\033[94m$\033[0m")
     print("\033[94mCapacidad:\033[0m", peso(mejorCombinacion, arregloX))
     
-
+        
 
 def busquedaGreedy(objetosX, limiteMaxX):
     global valorGreedy
