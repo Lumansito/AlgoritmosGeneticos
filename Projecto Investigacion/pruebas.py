@@ -1,10 +1,14 @@
 import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+
 
 # Ejemplo de datos
 data = {
     'text': [
         "El rápido gato marrón salta sobre el perro perezoso",
-        "Nunca saltes sobre el perro perezoso rápidamente",
+        "Nunca saltes sobre el mono perezoso rápidamente",
         "La economía global está en crisis",
         "Las acciones suben y bajan en el mercado",
         "Los nuevos avances en inteligencia artificial son asombrosos",
@@ -19,7 +23,6 @@ data = {
 
 df = pd.DataFrame(data)
 
-from sklearn.feature_extraction.text import CountVectorizer
 
 # Lista de stop words en español
 stop_words_spanish = [
@@ -51,17 +54,19 @@ vectorizer = CountVectorizer(stop_words=stop_words_spanish)
 X = vectorizer.fit_transform(df['text']) # Ajustar y transformar los documentos
 
 
-print(vectorizer.get_feature_names_out())
-print(X.toarray())  
+#print(vectorizer.get_feature_names_out())
+#print(X)  
 
-from sklearn.model_selection import train_test_split
 
 
 # Dividir los datos en conjunto de entrenamiento y prueba
-X_train, X_test, y_train, y_test = train_test_split(X, df['category'], test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, df['category'], test_size=0.1, random_state=42) # 70% entrenamiento, 30% prueba ya qu ese declaro     https://www.youtube.com/watch?v=BUkqYGPnLZ8&ab_channel=ManifoldAILearning     explicacion de la funcion 
+                                                                                                        # test_size=0.3 , lo q implica que el resto se completa con 0.7 para train.
 
-
-from sklearn.naive_bayes import MultinomialNB
+print(X_train.shape)
+print(y_train.shape)
+print(X_test.shape)
+print(y_test.shape)
 
 # Crear y entrenar el clasificador Naive Bayes
 clf = MultinomialNB()
