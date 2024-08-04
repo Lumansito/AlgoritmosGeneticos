@@ -37,15 +37,9 @@ documents = [
 #Crear un objeto de la clase CountVectorizer
 vectorizer = CountVectorizer(stop_words=stop_words_spanish)
 
-# Ajustar y transformar los documentos
-X = vectorizer.fit_transform(documents)
 
-# Mostrar las palabras que tienen valor y determinan el tipo del tweet
-print(vectorizer.get_feature_names_out())
-#Mostrar la matriz de frecuencia de palabras que tienen validez en cada tweet.
-print(X.toarray())  
+X = vectorizer.fit_transform(documents) # Ajustar y transformar los documentos
 
 
-
-
-
+print(vectorizer.get_feature_names_out()) # Mostrar todas las palabras que tienen valor dentro de las frases ingresadas
+print(X.toarray())   #Mostrar la matriz de frecuencia de palabras que tienen validez en cada tweet.
