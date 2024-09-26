@@ -3,7 +3,7 @@ import random
 import pandas as pd
 
 
-df = pd.read_excel(io=r'TP3\TablaCapitales.xlsx', sheet_name="Sheet1")
+df = pd.read_excel(io=r'TablaCapitales.xlsx', sheet_name="Sheet1")
 arregloDistancias = df.to_numpy()
 
 capitales=arregloDistancias[:,0].copy() #arreglo con los nombres de las capitales
