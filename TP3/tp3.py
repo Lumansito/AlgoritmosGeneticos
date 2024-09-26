@@ -4,43 +4,81 @@ import pandas as pd
 
 
 df = pd.read_excel(io=r'TP3\TablaCapitales.xlsx', sheet_name="Sheet1")
-array = df.to_numpy()
+arregloDistancias = df.to_numpy()
 
-print(array)
+capitales=arregloDistancias[:,0].copy() #arreglo con los nombres de las capitales
 
-capitales=array[0]
-
-
+'''
 def distanciaParaRecorrido(arregloDeRecorridos):
     distancia = 0
     for i in range(len(arregloDeRecorridos)-1):
-        distancia += array[arregloDeRecorridos[i]][arregloDeRecorridos[i+1]+1]
+        distancia += arregloDistancias[arregloDeRecorridos[i]][arregloDeRecorridos[i+1]+1]
     return distancia
-
-
-
 '''
+
+#APARTADO A
+
+
+def recorreDesde(capInicial):   #capInicial es el indice de la capital de donde arranca
+    print("Arrancamos en: ",capitales[capInicial])
+    visitadas[capInicial]=1                    #marca como visitada donde arranca
+    orden[0]=capInicial                       #pone en la primera posicion del arreglo de orden la capital de donde arranca
+    capActual=capInicial                     #pone la capital de donde arranca como la capital actual
+    while posActual<24:                 #mientras no haya pasado por todas las capitales
+      print(sum(visitadas))
+      capActual= capitalMasCercana(capActual)          #busca la capital mas cercana a la actual
+    print("Han sido visitadas: ",visitadas)
+    print("El orden es: ", orden)
+    return orden
+
+
+def capitalMasCercana(capActual):
+    global posActual
+    distancias = arregloDistancias[capActual][1:].copy()  #distancias desde donde estoy parado
+    print("Distancias desde ",capitales[capActual],": ",distancias)
+    minimaDistancia=9999
+    proximaCapital=capActual
+    for i in range (24):                          #recorre cada posicion del arreglo de distancias
+        if distancias[i]<minimaDistancia and visitadas[i]==0: #si es la distancia mas corta que no pase
+            minimaDistancia=distancias[i]                     #guardo la distancia
+            proximaCapital=i
+    print(orden)
+    print(visitadas)
+    orden[posActual]=proximaCapital                           #pongo el indice de la capital en el arreglo del orden
+    posActual+=1                                      #me muevo una posicion en el arreglo de orden                     #actualizo la capital actual a la nueva encontrada (la mas cercana)
+    visitadas[capActual]=1                        #
+    print("\n La prox más cercana es: ",capitales[proximaCapital],"a una distancia de: ",minimaDistancia)
+    return proximaCapital
+
+
+
+
+
 os.system('cls')
 op = ""
 print("_"*90+"\n")
 op = input("   a) Calcular recorrido con heurística desde un lugar en concreto\n   b) Recorrido mas corto con heurística\n   c) Recorrido mas corto con algoritmo genético\n   s) Salir\nIngrese la opción deseada: ").upper()
 while op != "A" and op != "B" and op != "C" and op != "S":
-    #os.system('cls')
+    os.system('cls')
     print("_"*90+"\n")
     print("\033[91mOpción no valida\033[0m")
     op = input("   a) Calcular recorrido con heurística desde un lugar en concreto\n   b) Recorrido mas corto con heurística\n   c) Recorrido mas corto con algoritmo genético\n   s) Salir\nIngrese la opción deseada: ").upper()
 
 while op !="S":
-    
-    #if op == "A":
-    #   for i in range(23): 
-    #       print(i, capitales[i])
-    #   cap=input("Ingrese la capital deseada: ") #VALIDAR
-    #   distancia, arreglo =funcionA(cap) #QUE ESTA EN apartadoA.py
+    #declaro variables / las reinicio
+    visitadas = [0 for _ in range(24)] #arreglo de 0 y 1 que marca por que capital pasó
+    orden = [0 for _ in range(24)] #arreglo que guarda el numero de la capital visitada en el orden que se visito
+    posActual=1
+
+    if op == "A":
+       for i in range(24): 
+           print(i, capitales[i])
+       cap=int(input("Ingrese la capital deseada: ")) #VALIDAR
+       recorreDesde(cap)
 
     #if op == "B":
     #   min=999999
-    #   for i in range(23): 
+    #   for i in range(24): 
     #       distancia, arreglo =funcionA(i) #QUE ESTA EN apartadoA.py, debería retornar el arreglo del orden como minimo 
     #       if distancia<min:
     #           indiceMin=i
@@ -52,7 +90,7 @@ while op !="S":
 
 
 
-    os.system('cls')
+    #os.system('cls')
     print("_"*90+"\n")
     print("¿Desea ejecutar otra opción?")
     op = input("   a) Calcular recorrido con heurística desde un lugar en concreto\n   b) Recorrido mas corto con heurística\n   c) Recorrido mas corto con algoritmo genético\n   s) Salir\nIngrese la opción deseada: ").upper()
@@ -64,7 +102,7 @@ while op !="S":
 print("\n\033[91m--- Fin del programa ---\033[0m")
 
 
-'''
+
 
 
 #a)Permitir ingresar una provincia y hallar la ruta de distancia mínima que logre unir todas las capitales de provincias 
