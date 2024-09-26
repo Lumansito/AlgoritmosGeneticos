@@ -1,5 +1,4 @@
 import os
-import time
 import pandas as pd
 
 
@@ -8,30 +7,19 @@ arregloDistancias = df.to_numpy()
 
 capitales=arregloDistancias[:,0].copy() #arreglo con los nombres de las capitales
 
-'''
-def distanciaParaRecorrido(arregloDeRecorridos):
-    distancia = 0
-    for i in range(len(arregloDeRecorridos)-1):
-        distancia += arregloDistancias[arregloDeRecorridos[i]][arregloDeRecorridos[i+1]+1]
-    return distancia
-'''
-
-#APARTADO A
 
 
 def recorreDesde(primeraCapital):   #primeraCapital es el indice de la capital de donde arranca
     visitadas[primeraCapital]=1                    #marca como visitada donde arranca
     orden[0]=primeraCapital                       #pone en la primera posicion del arreglo de orden la capital de donde arranca
-    capActual=primeraCapital                     #pone la capital de donde arranca como la capital actual
-    print ("\n\nCiudad de partida : ",capActual,"-",capitales[capActual])
-    print("Han sido visitadas: ",visitadas)
-    print("El orden es: ", orden)
+    capActual=primeraCapital                    #pone la capital de donde arranca como la capital actual
+    
+    #print("Han sido visitadas: ",visitadas)
+    #print("El orden es: ", orden)
     while posActual<24:                 #mientras no haya pasado por todas las capitales
       capActual= capitalMasCercana(capActual)          #busca la capital mas cercana a la actual
-    print("\n\n_____FIN_____")
-    print ("Ultima ciudad visitada : ",capActual,"-",capitales[capActual])
-    print("Han sido visitadas: ",visitadas)
-    print("El orden es: ", orden)
+    print ("\nUltima ciudad visitada : ",capActual,"-",capitales[capActual])
+    print("\nHan sido visitadas: ",visitadas)
     return orden
 
 
@@ -46,12 +34,20 @@ def capitalMasCercana(capActual):
     orden[posActual]=proximaCapital                           #pongo el indice de la capital en el arreglo del orden
     posActual+=1                                      #me muevo una posicion en el arreglo de orden y la dejo lista para la prox iteracion                     
     visitadas[proximaCapital]=1
-    print("\n Arranqué en (",capActual,"-", capitales[capActual],") y voy a (",proximaCapital,"-",capitales[proximaCapital],") a una distancia de: ",minimaDistancia)
-    print("Han sido visitadas: ",visitadas)
-    print("El orden es: ", orden) 
+    #print("\n Arranqué en (",capActual,"-", capitales[capActual],") y voy a (",proximaCapital,"-",capitales[proximaCapital],") a una distancia de: ",minimaDistancia)
+    #print("Han sido visitadas: ",visitadas)
+    #print("El orden es: ", orden) 
     return proximaCapital
 
-
+def calcularDistancia(orden):
+    distancia = 0
+    for i in range(23):
+        distancia += arregloDistancias[orden[i]][orden[i+1]+1]
+        #print("Distancia desde ",capitales[orden[i]]," hasta ",capitales[orden[i+1]],": ",arregloDistancias[orden[i]][orden[i+1]+1])
+        #print("Distancia acumulada: ",distancia)
+    #print("Distancia desde ",capitales[orden[23]]," hasta ",capitales[orden[0]],": ",arregloDistancias[orden[23]][orden[0]+1])
+    distancia+=(arregloDistancias[orden[0]][orden[23]+1])
+    return distancia
 
 
 
@@ -60,13 +56,12 @@ op = ""
 print("_"*90+"\n")
 op = input("   a) Calcular recorrido con heurística desde un lugar en concreto\n   b) Recorrido mas corto con heurística\n   c) Recorrido mas corto con algoritmo genético\n   s) Salir\nIngrese la opción deseada: ").upper()
 while op != "A" and op != "B" and op != "C" and op != "S":
-    os.system('cls')
     print("_"*90+"\n")
     print("\033[91mOpción no valida\033[0m")
     op = input("   a) Calcular recorrido con heurística desde un lugar en concreto\n   b) Recorrido mas corto con heurística\n   c) Recorrido mas corto con algoritmo genético\n   s) Salir\nIngrese la opción deseada: ").upper()
 
 while op !="S":
-    #declaro variables / las reinicio
+    #declaro variables
     visitadas = [0 for _ in range(24)] #arreglo de 0 y 1 que marca por que capital pasó
     orden = [0 for _ in range(24)] #arreglo que guarda el numero de la capital visitada en el orden que se visito
     posActual=1
@@ -74,29 +69,43 @@ while op !="S":
     if op == "A":
        for i in range(24): 
            print(i, capitales[i])
-       cap=int(input("Ingrese la capital deseada: ")) #VALIDAR
-       recorreDesde(cap)
+       puntoPartida=int(input("Ingrese la capital deseada: ")) #VALIDAR
+       print ("\nCiudad de partida : ",puntoPartida,"-",capitales[puntoPartida])
+       orden=recorreDesde(puntoPartida)
+       print("\nEl orden es: ", orden)
+       distancia=calcularDistancia(orden)
+       print("\nDistancia total desde ",capitales[orden[0]],": ",distancia)
 
-    #if op == "B":
-    #   min=999999
-    #   for i in range(24): 
-    #       distancia, arreglo =funcionA(i) #QUE ESTA EN apartadoA.py, debería retornar el arreglo del orden como minimo 
-    #       if distancia<min:
-    #           indiceMin=i
-    #           min=distancia
-    #   print("El recorrido es menor arrancando en ",capitales[indiceMin],". La distancia es: ",distancia )
+
+    if op == "B":
+       min=99999999
+       for i in range(24):
+            print ("\nCiudad de partida : ",i,"-",capitales[i])
+            orden=recorreDesde(i)
+            print("\nEl orden es: ", orden)
+            distanciaTotal=calcularDistancia(orden) 
+            print("\nDistancia total desde ",capitales[orden[0]],": ",distanciaTotal)
+            if distanciaTotal<min:
+               indiceMin=i
+               min=distanciaTotal
+               print("\033[91m\n\nNUEVO MENOR########################################################\033[0m\n", capitales[indiceMin], " - ", min)
+            
+            visitadas = [0 for _ in range(24)] #reseteo
+            orden = [0 for _ in range(24)] #reseteo
+            posActual=1 #reseteo
+            print("____________FIN recorrido ",i," _____________\n\n")
+       print("\nEl recorrido es menor arrancando en ",capitales[indiceMin],". La distancia es: ",min )
 
     #if op == "C":
     #   AG
 
 
 
-    #os.system('cls')
+
     print("_"*90+"\n")
     print("¿Desea ejecutar otra opción?")
     op = input("   a) Calcular recorrido con heurística desde un lugar en concreto\n   b) Recorrido mas corto con heurística\n   c) Recorrido mas corto con algoritmo genético\n   s) Salir\nIngrese la opción deseada: ").upper()
     while op != "A" and op != "B" and op != "C" and op != "S":
-        os.system('cls')
         print("_"*90+"\n")
         print("\033[91mOpción no valida\033[0m")
         op = input("   a) Calcular recorrido con heurística desde un lugar en concreto\n   b) Recorrido mas corto con heurística\n   c) Recorrido mas corto con algoritmo genético\n   s) Salir\nIngrese la opción deseada: ").upper()
