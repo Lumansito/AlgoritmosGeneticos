@@ -54,7 +54,7 @@ def calcularDistancia(orden):
 
 #ALGORITMO GENETICO
 numGenes = 24 #uno por cada capital
-numIndividuos = 5 #CAMBIAR------------------------------------------> 50 
+numIndividuos = 10 #CAMBIAR------------------------------------------> 50 
 probCrossover = 0.75
 probMutacion = 0.05
 #estas necesarias para las tablas
@@ -77,11 +77,56 @@ def algoritmoGenetico():
     valFitness = [0 for i in range(numIndividuos)] #Para guaradar los valores del porcentaje que brinda la fun fitness para cada indiviuo
     totalObjetivo = sum(valObj)
     for i in range(numIndividuos):
-        valFitness[i]=totalObjetivo/valObj[i]
+        valFitness[i]= 1-(valObj[i]/totalObjetivo) #ver que onda TODO
     print("El valor fitness es ",valFitness)
+    individuos=torneo(individuos,valFitness)
+    individuos=crossoverCiclico(individuos)
+    individuos=mutacion()
 
 
+def crossoverCiclico(individuos):
+   indice = 0
+   for j in range(numIndividuos//2):
+        aux=random.randint(1,100)
+        if(aux<=probCrossover*100):
+            padre1= individuos[indice].copy()
+            padre2= individuos[indice+1].copy()
+            ind=0
+            puntoInicio=padre1[ind]
+            puntoFinal=-1
+            hijo1=[0 for _ in range(numGenes)]
+            hijo2=[0 for _ in range(numGenes)]
+            
+            i=0
+            hijo1[i]=padre1[0]
+            
+            while puntoInicio!=puntoFinal:
+                hijo[i]=padre1[]
+                puntoFinal=padre2.index(puntoInicio)
+                
+              
 
+
+        indice+=2
+    return
+
+def torneo(individuos,valFitness):
+
+    N = 4  #cantidad de individuos a participar de cada torneo 
+    hijos = [[0 for _ in range(numGenes)]for _ in range(numIndividuos)]
+    
+    for j in range (numIndividuos):
+        candidatos = [0 for i in range(N)] #arreglo de indices de los 4 individuos a examinar
+        for i in range(N):
+            candidatos[i]=random.randint(0,numIndividuos-1) #Llenar el arreglo de cantidatos con 4 indices al azar
+        valorMayor = 0 #valor fitness del mayor individuo de los 4
+        indiceMayor=0
+        for i in range(N):
+            if(valFitness[candidatos[i]] > valorMayor):
+                valorMayor = valFitness[candidatos[i]]
+                indiceMayor = candidatos[i]
+        hijos[j]=individuos[indiceMayor].copy()  #selecciona al mejor individuo de los 4 y lo guarda en hijos
+    return hijos
 
 
 def inicializarPoblacion(): #Recorremos el arreglo y lo cargamos con una ruta al azar
@@ -92,7 +137,9 @@ def inicializarPoblacion(): #Recorremos el arreglo y lo cargamos con una ruta al
 
 
 def crossoverCiclico():
+    
     return
+
 
 def mutacion():
     return
@@ -102,6 +149,7 @@ def guardarDatosPorCorrida(numCorrida):
 
 def realizarTabla():    
     return
+
 
 
 
@@ -156,6 +204,7 @@ while op !="S":
        print("\nEl recorrido es menor arrancando en ",capitales[indiceMin],". La distancia es: ",min )
 
     if op == "C":
+        inicializarPoblacion()
         algoritmoGenetico()
 
 

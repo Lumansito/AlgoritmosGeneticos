@@ -90,7 +90,6 @@ def dibujar_mapa_con_orden(orden):
     plt.show()
 
 # El orden que recibes como parámetro
-orden = [1, 18, 6, 17, 5, 13, 21, 14, 16, 15, 11, 2, 3, 9, 8, 19, 0, 4, 20, 7, 23, 10, 12, 22]
-
+orden =  [15, 16, 14, 21, 13, 5, 17, 6, 18, 1, 19, 8, 0, 4, 20, 7, 23, 10, 12, 22, 11, 2, 3, 9]
 # Llamar a la función con el orden proporcionado
 dibujar_mapa_con_orden(orden)
