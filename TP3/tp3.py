@@ -76,16 +76,25 @@ def algoritmoGenetico():
     valObj = [0 for i in range(numIndividuos)]  #para guardar el valor de la func obj de cada individuo 
     for i in range(numIndividuos):
         valObj[i]=calcularDistancia(individuos[i]) #le paso un orden de recorrido
-    print("Las distancias para cada individuo son ",valObj)
-
+    print("\n\033[91mLas distancias para cada individuo son \033[0m\n",valObj)
+    
     valFitness = [0 for i in range(numIndividuos)] #Para guaradar los valores del porcentaje que brinda la fun fitness para cada indiviuo
     totalObjetivo = sum(valObj)
     for i in range(numIndividuos):
-        valFitness[i]= 1-(valObj[i]/totalObjetivo) #ver que onda TODO
-    print("El valor fitness es ",valFitness)
+        valFitness[i]= round(1-(valObj[i]/totalObjetivo), 5) #ver que onda TODO
+    print("\n\033[91mEl valor fitness es \033[0m\n",valFitness)
+    
     individuos=torneo(individuos,valFitness)
+    print("\n\033[91mDESPUES DE TORNEO\033[0m")
+    for i in range(numIndividuos):
+        print(individuos[i])
+
     individuos=crossoverCiclico(individuos)
-    individuos=mutacion()
+    print("\n\033[91mDESPUES DE CROSSOVER\033[0m")
+    for i in range(numIndividuos):
+        print(individuos[i])
+    
+    #individuos=mutacion()
 
 
 def crossoverCiclico(individuos):
@@ -96,36 +105,49 @@ def crossoverCiclico(individuos):
             padre1= individuos[indice].copy()
             padre2= individuos[indice+1].copy()
             
-            hijo1=[0 for _ in range(numGenes)]
-            hijo2=[0 for _ in range(numGenes)]
-            
-            indH1=0
-            indH2=0
-            indP1=0
-            indP2=0
+            hijo1=[-1 for _ in range(numGenes)]
+            hijo2=[-1 for _ in range(numGenes)]
 
+            hijo1[0]=padre1[0] #toma el primer gen del primer padre
+            hijo2[0]=padre2[0]  #toma el primer gen del segundo padre
+
+            indPadre=0
+            aux=-1
             puntoInicio=padre1[0]
-            puntoFinal=-1
+            #print("\nINICIO CROSSOVER\npadre1: ",padre1,"\npadre2: ",padre2)
+            while puntoInicio!=aux:
 
-            hijo1[indH1]=padre1[indP1] #toma el primer gen del primer padre
-            indH1+=1
-            
-            hijo2[0]=padre2[0]
-            indH2+=1
+                indPadre=padre1.index(padre2[indPadre]) #obtengo la posicion del (contenido del padre 2) en el padre 1
+                
+                hijo1[indPadre]=padre1[indPadre] #asigno el contenido del padre 1 en la posicion actual en el hijo 1
 
-            while puntoInicio!=puntoFinal:
-                contenidoPadre2=padre2[indP2] #1 
-                
-                
-                indP1=padre2.index(contenidoPadre2) #busco el 1 en el primer arreglo
-                
-              
+                hijo2[indPadre]=padre2[indPadre] #asigno el contenido del padre 2 en la posicion actual en el hijo 2
+
+                aux=padre2[indPadre]
+                #print("mientras crossover ")
+                #print(hijo1)
+                #print(hijo2)
+            #print("\n\033[91mfin del crossover\033[0m")
+            #print(hijo1)
+            #print(hijo2)
+
+            for i in range(numGenes):
+                if hijo1[i]==-1:
+                    hijo1[i]=padre2[i]
+                    hijo2[i]=padre1[i]
+            #print("\n\033[91mdespues de rellenar\033[0m")
+            #print(hijo1)
+            #print(hijo2)
+            individuos[indice]= hijo1.copy()
+            individuos[indice+1]= hijo2.copy()
         indice+=2
-    return
+    return individuos
+
+
 
 def torneo(individuos,valFitness):
 
-    N = 4  #cantidad de individuos a participar de cada torneo 
+    N = 2  #cantidad de individuos a participar de cada torneo 
     hijos = [[0 for _ in range(numGenes)]for _ in range(numIndividuos)]
     
     for j in range (numIndividuos):
