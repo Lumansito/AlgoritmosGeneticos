@@ -3,7 +3,11 @@ import random
 import pandas as pd
 
 
-df = pd.read_excel(io=r'TablaCapitales.xlsx', sheet_name="Sheet1")
+#lucho
+df = pd.read_excel(io=r'TP3\TablaCapitales.xlsx', sheet_name="Sheet1")
+#mati
+#df = pd.read_excel(io=r'TablaCapitales.xlsx', sheet_name="Sheet1")
+
 arregloDistancias = df.to_numpy()
 
 capitales=arregloDistancias[:,0].copy() #arreglo con los nombres de las capitales
@@ -85,28 +89,37 @@ def algoritmoGenetico():
 
 
 def crossoverCiclico(individuos):
-   indice = 0
-   for j in range(numIndividuos//2):
+    indice = 0
+    for j in range(numIndividuos//2):
         aux=random.randint(1,100)
         if(aux<=probCrossover*100):
             padre1= individuos[indice].copy()
             padre2= individuos[indice+1].copy()
-            ind=0
-            puntoInicio=padre1[ind]
-            puntoFinal=-1
+            
             hijo1=[0 for _ in range(numGenes)]
             hijo2=[0 for _ in range(numGenes)]
             
-            i=0
-            hijo1[i]=padre1[0]
+            indH1=0
+            indH2=0
+            indP1=0
+            indP2=0
+
+            puntoInicio=padre1[0]
+            puntoFinal=-1
+
+            hijo1[indH1]=padre1[indP1] #toma el primer gen del primer padre
+            indH1+=1
             
+            hijo2[0]=padre2[0]
+            indH2+=1
+
             while puntoInicio!=puntoFinal:
-                hijo[i]=padre1[]
-                puntoFinal=padre2.index(puntoInicio)
+                contenidoPadre2=padre2[indP2] #1 
+                
+                
+                indP1=padre2.index(contenidoPadre2) #busco el 1 en el primer arreglo
                 
               
-
-
         indice+=2
     return
 
@@ -135,10 +148,6 @@ def inicializarPoblacion(): #Recorremos el arreglo y lo cargamos con una ruta al
         individuos[i] = random.sample(range(numGenes), numGenes)  # Generamos una lista de números únicos del 0 al 23
     return individuos
 
-
-def crossoverCiclico():
-    
-    return
 
 
 def mutacion():
