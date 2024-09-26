@@ -19,35 +19,36 @@ def distanciaParaRecorrido(arregloDeRecorridos):
 #APARTADO A
 
 
-def recorreDesde(capInicial):   #capInicial es el indice de la capital de donde arranca
-    print("Arrancamos en: ",capitales[capInicial])
-    visitadas[capInicial]=1                    #marca como visitada donde arranca
-    orden[0]=capInicial                       #pone en la primera posicion del arreglo de orden la capital de donde arranca
-    capActual=capInicial                     #pone la capital de donde arranca como la capital actual
+def recorreDesde(primeraCapital):   #primeraCapital es el indice de la capital de donde arranca
+    visitadas[primeraCapital]=1                    #marca como visitada donde arranca
+    orden[0]=primeraCapital                       #pone en la primera posicion del arreglo de orden la capital de donde arranca
+    capActual=primeraCapital                     #pone la capital de donde arranca como la capital actual
+    print ("\n\nCiudad de partida : ",capActual,"-",capitales[capActual])
+    print("Han sido visitadas: ",visitadas)
+    print("El orden es: ", orden)
     while posActual<24:                 #mientras no haya pasado por todas las capitales
-      print(sum(visitadas))
       capActual= capitalMasCercana(capActual)          #busca la capital mas cercana a la actual
+    print("\n\n_____FIN_____")
+    print ("Ultima ciudad visitada : ",capActual,"-",capitales[capActual])
     print("Han sido visitadas: ",visitadas)
     print("El orden es: ", orden)
     return orden
 
 
 def capitalMasCercana(capActual):
-    global posActual
+    global posActual #arranca en 1
     distancias = arregloDistancias[capActual][1:].copy()  #distancias desde donde estoy parado
-    print("Distancias desde ",capitales[capActual],": ",distancias)
     minimaDistancia=9999
-    proximaCapital=capActual
     for i in range (24):                          #recorre cada posicion del arreglo de distancias
         if distancias[i]<minimaDistancia and visitadas[i]==0: #si es la distancia mas corta que no pase
             minimaDistancia=distancias[i]                     #guardo la distancia
             proximaCapital=i
-    print(orden)
-    print(visitadas)
     orden[posActual]=proximaCapital                           #pongo el indice de la capital en el arreglo del orden
-    posActual+=1                                      #me muevo una posicion en el arreglo de orden                     #actualizo la capital actual a la nueva encontrada (la mas cercana)
-    visitadas[capActual]=1                        #
-    print("\n La prox más cercana es: ",capitales[proximaCapital],"a una distancia de: ",minimaDistancia)
+    posActual+=1                                      #me muevo una posicion en el arreglo de orden y la dejo lista para la prox iteracion                     
+    visitadas[proximaCapital]=1
+    print("\n Arranqué en (",capActual,"-", capitales[capActual],") y voy a (",proximaCapital,"-",capitales[proximaCapital],") a una distancia de: ",minimaDistancia)
+    print("Han sido visitadas: ",visitadas)
+    print("El orden es: ", orden) 
     return proximaCapital
 
 
