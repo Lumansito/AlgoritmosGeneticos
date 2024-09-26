@@ -1,4 +1,5 @@
 import os
+import random
 import pandas as pd
 
 
@@ -39,6 +40,7 @@ def capitalMasCercana(capActual):
     #print("El orden es: ", orden) 
     return proximaCapital
 
+
 def calcularDistancia(orden):
     distancia = 0
     for i in range(23):
@@ -50,7 +52,64 @@ def calcularDistancia(orden):
     return distancia
 
 
+#ALGORITMO GENETICO
+numGenes = 24 #uno por cada capital
+numIndividuos = 5 #CAMBIAR------------------------------------------> 50 
+probCrossover = 0.75
+probMutacion = 0.05
+#estas necesarias para las tablas
+valorMenorGlobal = 99999
+valorMayorGlobal = 0
+menorGlobal = [0]*numGenes
+mayorGlobal = [0]*numGenes
+corridas = 0 #Este valor es modificado en la ejecucion
 
+
+def algoritmoGenetico():
+    individuos = inicializarPoblacion()
+    print(individuos) 
+    
+    valObj = [0 for i in range(numIndividuos)]  #para guardar el valor de la func obj de cada individuo 
+    for i in range(numIndividuos):
+        valObj[i]=calcularDistancia(individuos[i]) #le paso un orden de recorrido
+    print("Las distancias para cada individuo son ",valObj)
+
+    valFitness = [0 for i in range(numIndividuos)] #Para guaradar los valores del porcentaje que brinda la fun fitness para cada indiviuo
+    totalObjetivo = sum(valObj)
+    for i in range(numIndividuos):
+        valFitness[i]=totalObjetivo/valObj[i]
+    print("El valor fitness es ",valFitness)
+
+
+
+
+
+def inicializarPoblacion(): #Recorremos el arreglo y lo cargamos con una ruta al azar
+    individuos=[[0 for i in range(numGenes)] for j in range(numIndividuos)]
+    for i in range(numIndividuos): #Recorremos los 50 individuos
+        individuos[i] = random.sample(range(numGenes), numGenes)  # Generamos una lista de números únicos del 0 al 23
+    return individuos
+
+
+def crossoverCiclico():
+    return
+
+def mutacion():
+    return
+
+def guardarDatosPorCorrida(numCorrida):
+    return
+
+def realizarTabla():    
+    return
+
+
+
+
+
+
+
+#MENU
 os.system('cls')
 op = ""
 print("_"*90+"\n")
@@ -96,8 +155,8 @@ while op !="S":
             print("____________FIN recorrido ",i," _____________\n\n")
        print("\nEl recorrido es menor arrancando en ",capitales[indiceMin],". La distancia es: ",min )
 
-    #if op == "C":
-    #   AG
+    if op == "C":
+        algoritmoGenetico()
 
 
 
