@@ -60,13 +60,13 @@ def calcularDistancia(orden):
 numGenes = 24 #uno por cada capital
 numIndividuos = 10 #CAMBIAR------------------------------------------> 50 
 probCrossover = 0.75
-probMutacion = 0.05
+probMutacion = 0.1
 #estas necesarias para las tablas
 valorMenorGlobal = 99999
 valorMayorGlobal = 0
 menorGlobal = [0]*numGenes
 mayorGlobal = [0]*numGenes
-corridas = 0 #Este valor es modificado en la ejecucion
+ciclos = 300 
 
 
 def algoritmoGenetico():
@@ -74,27 +74,43 @@ def algoritmoGenetico():
     print(individuos) 
     
     valObj = [0 for i in range(numIndividuos)]  #para guardar el valor de la func obj de cada individuo 
-    for i in range(numIndividuos):
-        valObj[i]=calcularDistancia(individuos[i]) #le paso un orden de recorrido
-    print("\n\033[91mLas distancias para cada individuo son \033[0m\n",valObj)
-    
     valFitness = [0 for i in range(numIndividuos)] #Para guaradar los valores del porcentaje que brinda la fun fitness para cada indiviuo
-    totalObjetivo = sum(valObj)
-    for i in range(numIndividuos):
-        valFitness[i]= round(1-(valObj[i]/totalObjetivo), 5) #ver que onda TODO
-    print("\n\033[91mEl valor fitness es \033[0m\n",valFitness)
-    
-    individuos=torneo(individuos,valFitness)
-    print("\n\033[91mDESPUES DE TORNEO\033[0m")
-    for i in range(numIndividuos):
-        print(individuos[i])
 
-    individuos=crossoverCiclico(individuos)
-    print("\n\033[91mDESPUES DE CROSSOVER\033[0m")
-    for i in range(numIndividuos):
-        print(individuos[i])
-    
-    #individuos=mutacion()
+    for ciclo in range(ciclos):
+        print("\n\033[91m_______Ciclo ",ciclo+1,"_______\033[0m")
+        #calculo del valor objetivo
+        for i in range(numIndividuos):
+            valObj[i]=calcularDistancia(individuos[i]) #le paso un orden de recorrido
+        #print("\n\033[91mLas distancias para cada individuo son \033[0m\n",valObj)
+        print("\n\033[92mAverage distance for this cycle:\033[0m", sum(valObj) / len(valObj))
+        
+        #calculo del valor fitness
+        totalObjetivo = sum(valObj)
+        for i in range(numIndividuos):
+            valFitness[i]= round(1-(valObj[i]/totalObjetivo), 5) #ver que onda TODO
+        #print("\n\033[91mEl valor fitness es \033[0m\n",valFitness)
+        #print("\n\033[92mAverage fitness for this cycle:\033[0m", sum(valFitness) / len(valFitness))
+        
+        #torneo
+        individuos=torneo(individuos,valFitness)
+        #print("\n\033[91mDESPUES DE TORNEO\033[0m")
+        #for i in range(numIndividuos):
+        #    print(individuos[i])
+
+        #crossover
+        individuos=crossoverCiclico(individuos)
+        #print("\n\033[91mDESPUES DE CROSSOVER\033[0m")
+        #for i in range(numIndividuos):
+        #    print(individuos[i])
+        
+        #mutacion
+        #individuos=mutacionSwap(individuos)
+        #individuos=mutacionAdjointSwap(individuos) #pesimos resultados wtf
+        individuos=mutacionInversion(individuos)
+        
+        #print("\n\033[91mDESPUES DE MUTACION\033[0m")
+        #for i in range(numIndividuos):
+        #    print(individuos[i])
 
 
 def crossoverCiclico(individuos):
@@ -113,9 +129,9 @@ def crossoverCiclico(individuos):
 
             indPadre=0
             aux=-1
-            puntoInicio=padre1[0]
+
             #print("\nINICIO CROSSOVER\npadre1: ",padre1,"\npadre2: ",padre2)
-            while puntoInicio!=aux:
+            while padre1[0]!=aux:
 
                 indPadre=padre1.index(padre2[indPadre]) #obtengo la posicion del (contenido del padre 2) en el padre 1
                 
@@ -144,7 +160,6 @@ def crossoverCiclico(individuos):
     return individuos
 
 
-
 def torneo(individuos,valFitness):
 
     N = 2  #cantidad de individuos a participar de cada torneo 
@@ -171,19 +186,59 @@ def inicializarPoblacion(): #Recorremos el arreglo y lo cargamos con una ruta al
     return individuos
 
 
+def mutacionSwap(individuos):
+    for i in range(numIndividuos):
+        aux=random.randint(1,100)
+        if(aux<=probMutacion*100):
+            pos1=random.randint(0,numGenes-1)
+            pos2=random.randint(0,numGenes-1)
+            while pos1==pos2:
+                pos2=random.randint(0,numGenes-1)
+            aux=individuos[i][pos1]
+            individuos[i][pos1]=individuos[i][pos2]
+            individuos[i][pos2]=aux
+    return individuos
 
-def mutacion():
-    return
+def mutacionAdjointSwap(individuos):
+    for i in range(numIndividuos):
+        aux=random.randint(1,100)
+        if(aux<=probMutacion*100):
+            pos1=random.randint(0,numGenes-1)
+            if pos1==23:
+                pos2=0
+            else:
+                pos2=pos1+1
+            aux=individuos[i][pos1]
+            individuos[i][pos1]=individuos[i][pos2]
+            individuos[i][pos2]=aux
+    return individuos
+
+def mutacionInversion(individuos):
+    for i in range(numIndividuos):
+        aux=random.randint(1,100)
+        if(aux<=probMutacion*100):
+            pos1=random.randint(0,numGenes-1)
+            pos2=random.randint(0,numGenes-1)
+            while pos1==pos2:
+                pos2=random.randint(0,numGenes-1)
+            if pos1>pos2:
+                aux=pos1
+                pos1=pos2
+                pos2=aux
+            while pos1<pos2:
+                aux=individuos[i][pos1]
+                individuos[i][pos1]=individuos[i][pos2]
+                individuos[i][pos2]=aux
+                pos1+=1
+                pos2-=1
+    return individuos
+
 
 def guardarDatosPorCorrida(numCorrida):
     return
 
 def realizarTabla():    
     return
-
-
-
-
 
 
 
@@ -199,7 +254,7 @@ while op != "A" and op != "B" and op != "C" and op != "S":
     op = input("   a) Calcular recorrido con heurística desde un lugar en concreto\n   b) Recorrido mas corto con heurística\n   c) Recorrido mas corto con algoritmo genético\n   s) Salir\nIngrese la opción deseada: ").upper()
 
 while op !="S":
-    #declaro variables
+    #declaro variables para opciones A y B
     visitadas = [0 for _ in range(24)] #arreglo de 0 y 1 que marca por que capital pasó
     orden = [0 for _ in range(24)] #arreglo que guarda el numero de la capital visitada en el orden que se visito
     posActual=1
@@ -235,7 +290,6 @@ while op !="S":
        print("\nEl recorrido es menor arrancando en ",capitales[indiceMin],". La distancia es: ",min )
 
     if op == "C":
-        inicializarPoblacion()
         algoritmoGenetico()
 
 
