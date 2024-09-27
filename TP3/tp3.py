@@ -1,6 +1,8 @@
+from datetime import datetime
 import os
 import random
 import pandas as pd
+from mapa.dibujaMapa import dibujarMapa
 
 
 #lucho
@@ -58,26 +60,23 @@ def calcularDistancia(orden):
 
 #ALGORITMO GENETICO
 numGenes = 24 #uno por cada capital
-numIndividuos = 10 #CAMBIAR------------------------------------------> 50 
+numIndividuos = 50 
 probCrossover = 0.75
 probMutacion = 0.1
-#estas necesarias para las tablas
-valorMenorGlobal = 99999
-valorMayorGlobal = 0
-menorGlobal = [0]*numGenes
-mayorGlobal = [0]*numGenes
-ciclos = 300 
+ciclos = 200 
 
 
 def algoritmoGenetico():
+    inicializarValoresCorridas()
     individuos = inicializarPoblacion()
     print(individuos) 
     
     valObj = [0 for i in range(numIndividuos)]  #para guardar el valor de la func obj de cada individuo 
     valFitness = [0 for i in range(numIndividuos)] #Para guaradar los valores del porcentaje que brinda la fun fitness para cada indiviuo
 
-    for ciclo in range(ciclos):
-        print("\n\033[91m_______Ciclo ",ciclo+1,"_______\033[0m")
+    for iteracion in range(ciclos):
+        print("\n\033[91m_______Ciclo ",iteracion+1,"_______\033[0m")
+        
         #calculo del valor objetivo
         for i in range(numIndividuos):
             valObj[i]=calcularDistancia(individuos[i]) #le paso un orden de recorrido
@@ -91,6 +90,8 @@ def algoritmoGenetico():
         #print("\n\033[91mEl valor fitness es \033[0m\n",valFitness)
         #print("\n\033[92mAverage fitness for this cycle:\033[0m", sum(valFitness) / len(valFitness))
         
+        guardarDatosPorCorrida(iteracion, totalObjetivo, valObj, individuos)
+
         #torneo
         individuos=torneo(individuos,valFitness)
         #print("\n\033[91mDESPUES DE TORNEO\033[0m")
@@ -104,14 +105,14 @@ def algoritmoGenetico():
         #    print(individuos[i])
         
         #mutacion
-        #individuos=mutacionSwap(individuos)
+        individuos=mutacionSwap(individuos)
         #individuos=mutacionAdjointSwap(individuos) #pesimos resultados wtf
-        individuos=mutacionInversion(individuos)
+        #individuos=mutacionInversion(individuos)
         
         #print("\n\033[91mDESPUES DE MUTACION\033[0m")
         #for i in range(numIndividuos):
         #    print(individuos[i])
-
+    realizarTabla()
 
 def crossoverCiclico(individuos):
     indice = 0
@@ -159,10 +160,9 @@ def crossoverCiclico(individuos):
         indice+=2
     return individuos
 
-
 def torneo(individuos,valFitness):
 
-    N = 2  #cantidad de individuos a participar de cada torneo 
+    N = 8  #cantidad de individuos a participar de cada torneo 
     hijos = [[0 for _ in range(numGenes)]for _ in range(numIndividuos)]
     
     for j in range (numIndividuos):
@@ -178,13 +178,11 @@ def torneo(individuos,valFitness):
         hijos[j]=individuos[indiceMayor].copy()  #selecciona al mejor individuo de los 4 y lo guarda en hijos
     return hijos
 
-
 def inicializarPoblacion(): #Recorremos el arreglo y lo cargamos con una ruta al azar
     individuos=[[0 for i in range(numGenes)] for j in range(numIndividuos)]
     for i in range(numIndividuos): #Recorremos los 50 individuos
         individuos[i] = random.sample(range(numGenes), numGenes)  # Generamos una lista de números únicos del 0 al 23
     return individuos
-
 
 def mutacionSwap(individuos):
     for i in range(numIndividuos):
@@ -205,7 +203,7 @@ def mutacionAdjointSwap(individuos):
         if(aux<=probMutacion*100):
             pos1=random.randint(0,numGenes-1)
             if pos1==23:
-                pos2=0
+                pos2=22
             else:
                 pos2=pos1+1
             aux=individuos[i][pos1]
@@ -233,12 +231,83 @@ def mutacionInversion(individuos):
                 pos2-=1
     return individuos
 
+#guardar valores por ciclo
+valorMenorGlobal = 99999
+valorMayorGlobal = 0
+menorGlobal = [0]*numGenes
+mayorGlobal = [0]*numGenes
 
-def guardarDatosPorCorrida(numCorrida):
-    return
+def inicializarValoresCorridas():
+    global minimoFO, maximoFO, cromosomasMaximos, cromosomasMinimos, promedioValObjPorCorrida, acumCorridas
+    acumCorridas = 0
+    minimoFO = [0 for _ in range(ciclos)]
+    maximoFO = [0 for _ in range(ciclos)]
+    cromosomasMaximos = [0 for _ in range(ciclos)]
+    cromosomasMinimos = [0 for _ in range(ciclos)]
+    promedioValObjPorCorrida = [0 for _ in range(ciclos)]
+
+def guardarDatosPorCorrida(iteracion, totalObjetivo, valObj, individuos):
+    global menorGlobal, mayorGlobal, valorMayorGlobal, valorMenorGlobal, acumCorridas,maximoFO,minimoFO,cromosomasMaximos,cromosomasMinimos, promedioValObjPorCorrida
+    valorMayor = 0
+    valorMenor = 99999999
+    mayor = [0]*numGenes
+    menor = [0]*numGenes
+    promedioValObjPorCorrida[acumCorridas]= totalObjetivo/numIndividuos #guarda el prom de la FO de la generacion
+    acumCorridas +=1
+    
+    for i in range(numIndividuos):
+        aux = valObj[i]
+        if(aux>valorMayor):
+            valorMayor = aux
+            mayor = individuos[i].copy()
+        if(aux<valorMenor):
+            valorMenor = aux
+            menor = individuos[i].copy()  
+        if(aux > valorMayorGlobal):
+            valorMayorGlobal = aux
+            mayorGlobal = individuos[i].copy()
+        if(aux < valorMenorGlobal):
+            valorMenorGlobal = aux
+            menorGlobal = individuos[i].copy()
+
+    maximoFO[iteracion] = valorMayor
+    minimoFO[iteracion] = valorMenor
+    cromosomasMaximos[iteracion] = mayor
+    cromosomasMinimos[iteracion] = menor
 
 def realizarTabla():    
-    return
+    global individuos,valObj,porcFitness
+    datos_tabla = {
+        "Generación" : [i+1 for i in range(ciclos)],
+        "Mínimo FO": minimoFO,
+        "Máximo FO": maximoFO,
+        "Cromosoma Máximo": cromosomasMaximos,
+        "Cromosoma Mínimo": cromosomasMinimos,
+        "Promedio": promedioValObjPorCorrida
+    }
+    current_time = datetime.now().strftime("%H-%M-%S") #para no tener que borrar el excel cada vez
+    df_individuos = pd.DataFrame(datos_tabla)
+    
+    # Get the directory of the current script
+    current_dir = os.path.dirname(__file__)
+    # Construct the file path
+    file_path = os.path.join(current_dir, f"TablaAG_{current_time}.xlsx")
+    
+    with pd.ExcelWriter(file_path) as writer:
+        df_individuos.to_excel(writer, sheet_name = 'Individuos', index = False)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -268,6 +337,7 @@ while op !="S":
        print("\nEl orden es: ", orden)
        distancia=calcularDistancia(orden)
        print("\nDistancia total desde ",capitales[orden[0]],": ",distancia)
+       dibujarMapa(orden)
 
 
     if op == "B":
@@ -281,6 +351,7 @@ while op !="S":
             if distanciaTotal<min:
                indiceMin=i
                min=distanciaTotal
+               ordenMin=orden
                print("\033[91m\n\nNUEVO MENOR########################################################\033[0m\n", capitales[indiceMin], " - ", min)
             
             visitadas = [0 for _ in range(24)] #reseteo
@@ -288,12 +359,10 @@ while op !="S":
             posActual=1 #reseteo
             print("____________FIN recorrido ",i," _____________\n\n")
        print("\nEl recorrido es menor arrancando en ",capitales[indiceMin],". La distancia es: ",min )
+       dibujarMapa(ordenMin)
 
     if op == "C":
         algoritmoGenetico()
-
-
-
 
     print("_"*90+"\n")
     print("¿Desea ejecutar otra opción?")
@@ -305,22 +374,3 @@ while op !="S":
 print("\n\033[91m--- Fin del programa ---\033[0m")
 
 
-
-
-
-#a)Permitir ingresar una provincia y hallar la ruta de distancia mínima que logre unir todas las capitales de provincias 
-# de la República Argentina partiendo de dicha capital utilizando la siguiente heurística: 
-# “Desde cada ciudad ir a la ciudad más cercana no visitada.”  
-# Recordar regresar siempre a la ciudad de partida. Presentar un mapa de la República con el recorrido indicado. 
-# Además   indicar la ciudad de partida, el recorrido completo y la longitud del trayecto. 
-# El programa deberá permitir seleccionar la capital que el usuario desee ingresar como inicio del recorrido.
-
-
-
-#b)Encontrar el recorrido mínimo para visitar todas las capitales de las provincias de la República Argentina 
-# siguiendo la heurística mencionada en el punto a. Deberá mostrar como salida el recorrido y la longitud del trayecto.
-
-
-
-#c)Hallar la ruta de distancia mínima que logre unir todas las capitales de provincias de la República Argentina, 
-# utilizando un algoritmo genético.

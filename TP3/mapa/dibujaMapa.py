@@ -41,7 +41,7 @@ localidades = [
 ]
 
 # Función que recibe el orden y dibuja el mapa
-def dibujar_mapa_con_orden(orden):
+def dibujarMapa(orden):
     # Crear un grafo
     G = nx.Graph()
 
@@ -60,7 +60,7 @@ def dibujar_mapa_con_orden(orden):
     # Intentar cargar el mapa de Argentina desde el shapefile
     try:
         print("Cargando el mapa de Argentina...")
-        argentina = gpd.read_file('gadm41_ARG_1.shp')  # Cambia 'gadm41_ARG_0.shp' al nombre correcto de tu archivo
+        argentina = gpd.read_file('TP3\mapa\gadm41_ARG_1.shp')  # Cambia 'gadm41_ARG_0.shp' al nombre correcto de tu archivo
         print("Mapa cargado con éxito.")
     except Exception as e:
         print(f"Error al cargar el mapa: {e}")
@@ -85,11 +85,11 @@ def dibujar_mapa_con_orden(orden):
     nx.draw_networkx_labels(G, pos, ax=ax, font_size=10, font_color='black')
 
     # Mostrar el mapa
-    plt.title("Mapa de Argentina con Capitales Unidas")
+    plt.title("Recorrido realizado")
     plt.axis('off')  # No mostrar ejes
     plt.show()
 
 # El orden que recibes como parámetro
-orden =  [15, 16, 14, 21, 13, 5, 17, 6, 18, 1, 19, 8, 0, 4, 20, 7, 23, 10, 12, 22, 11, 2, 3, 9]
+#orden =  [15, 16, 14, 21, 13, 5, 17, 6, 18, 1, 19, 8, 0, 4, 20, 7, 23, 10, 12, 22, 11, 2, 3, 9]
 # Llamar a la función con el orden proporcionado
-dibujar_mapa_con_orden(orden)
+#dibujarMapa(orden)
