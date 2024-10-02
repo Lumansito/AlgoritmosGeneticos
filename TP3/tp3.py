@@ -63,7 +63,7 @@ numGenes = 24 #uno por cada capital
 numIndividuos = 50 
 probCrossover = 0.75
 probMutacion = 0.1
-ciclos = 200 
+ciclos = 500
 
 
 def algoritmoGenetico():
@@ -105,9 +105,16 @@ def algoritmoGenetico():
         #    print(individuos[i])
         
         #mutacion
-        individuos=mutacionSwap(individuos)
+
+        #muta = random.randint(1,100)
+        #if muta <= 50:
+        #    individuos=mutacionSwap(individuos)
+        #else:
+        #    individuos=mutacionInversion(individuos)
+
+        #individuos=mutacionSwap(individuos)
         #individuos=mutacionAdjointSwap(individuos) #pesimos resultados wtf
-        #individuos=mutacionInversion(individuos)
+        individuos=mutacionInversion(individuos)
         
         #print("\n\033[91mDESPUES DE MUTACION\033[0m")
         #for i in range(numIndividuos):
@@ -184,20 +191,20 @@ def inicializarPoblacion(): #Recorremos el arreglo y lo cargamos con una ruta al
         individuos[i] = random.sample(range(numGenes), numGenes)  # Generamos una lista de números únicos del 0 al 23
     return individuos
 
-def mutacionSwap(individuos):
+def mutacionSwap(individuos):    #intercambia dos genes al azar
     for i in range(numIndividuos):
         aux=random.randint(1,100)
         if(aux<=probMutacion*100):
             pos1=random.randint(0,numGenes-1)
             pos2=random.randint(0,numGenes-1)
-            while pos1==pos2:
+            while pos1==pos2:        #para que no se intercambien el mismo gen por si mismo
                 pos2=random.randint(0,numGenes-1)
             aux=individuos[i][pos1]
             individuos[i][pos1]=individuos[i][pos2]
             individuos[i][pos2]=aux
     return individuos
 
-def mutacionAdjointSwap(individuos):
+def mutacionAdjointSwap(individuos):   #intercambia dos genes adyacentes
     for i in range(numIndividuos):
         aux=random.randint(1,100)
         if(aux<=probMutacion*100):
@@ -211,7 +218,7 @@ def mutacionAdjointSwap(individuos):
             individuos[i][pos2]=aux
     return individuos
 
-def mutacionInversion(individuos):
+def mutacionInversion(individuos):     
     for i in range(numIndividuos):
         aux=random.randint(1,100)
         if(aux<=probMutacion*100):
