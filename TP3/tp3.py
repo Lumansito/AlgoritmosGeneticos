@@ -5,10 +5,7 @@ import pandas as pd
 from mapa.dibujaMapa import dibujarMapa
 
 
-#lucho
 df = pd.read_excel(io=r'TP3\TablaCapitales.xlsx', sheet_name="Sheet1")
-#mati
-#df = pd.read_excel(io=r'TablaCapitales.xlsx', sheet_name="Sheet1")
 
 arregloDistancias = df.to_numpy()
 
@@ -21,12 +18,9 @@ def recorreDesde(primeraCapital):   #primeraCapital es el indice de la capital d
     orden[0]=primeraCapital                       #pone en la primera posicion del arreglo de orden la capital de donde arranca
     capActual=primeraCapital                    #pone la capital de donde arranca como la capital actual
     
-    #print("Han sido visitadas: ",visitadas)
-    #print("El orden es: ", orden)
+
     while posActual<24:                 #mientras no haya pasado por todas las capitales
       capActual= capitalMasCercana(capActual)          #busca la capital mas cercana a la actual
-    print ("\nUltima ciudad visitada : ",capActual,"-",capitales[capActual])
-    print("\nHan sido visitadas: ",visitadas)
     return orden
 
 
@@ -41,9 +35,7 @@ def capitalMasCercana(capActual):
     orden[posActual]=proximaCapital                           #pongo el indice de la capital en el arreglo del orden
     posActual+=1                                      #me muevo una posicion en el arreglo de orden y la dejo lista para la prox iteracion                     
     visitadas[proximaCapital]=1
-    #print("\n Arranqué en (",capActual,"-", capitales[capActual],") y voy a (",proximaCapital,"-",capitales[proximaCapital],") a una distancia de: ",minimaDistancia)
-    #print("Han sido visitadas: ",visitadas)
-    #print("El orden es: ", orden) 
+    
     return proximaCapital
 
 
@@ -51,9 +43,6 @@ def calcularDistancia(orden):
     distancia = 0
     for i in range(23):
         distancia += arregloDistancias[orden[i]][orden[i+1]+1]
-        #print("Distancia desde ",capitales[orden[i]]," hasta ",capitales[orden[i+1]],": ",arregloDistancias[orden[i]][orden[i+1]+1])
-        #print("Distancia acumulada: ",distancia)
-    #print("Distancia desde ",capitales[orden[23]]," hasta ",capitales[orden[0]],": ",arregloDistancias[orden[23]][orden[0]+1])
     distancia+=(arregloDistancias[orden[0]][orden[23]+1])
     return distancia
 
@@ -80,7 +69,7 @@ def algoritmoGenetico():
         #calculo del valor objetivo
         for i in range(numIndividuos):
             valObj[i]=calcularDistancia(individuos[i]) #le paso un orden de recorrido
-        #print("\n\033[91mLas distancias para cada individuo son \033[0m\n",valObj)
+       
         print("\n\033[92mAverage distance for this cycle:\033[0m", sum(valObj) / len(valObj))
         
         #calculo del valor fitness
@@ -88,38 +77,34 @@ def algoritmoGenetico():
         for i in range(numIndividuos):
             valFitness[i]= round(1-(valObj[i]/totalObjetivo), 5) #ver que onda TODO
            
-        #print("\n\033[91mEl valor fitness es \033[0m\n",valFitness)
-        #print("\n\033[92mAverage fitness for this cycle:\033[0m", sum(valFitness) / len(valFitness))
+        
         
         guardarDatosPorCorrida(iteracion, totalObjetivo, valObj, individuos)
 
         #torneo
         individuos=torneo(individuos,valFitness)
-        #print("\n\033[91mDESPUES DE TORNEO\033[0m")
-        #for i in range(numIndividuos):
-        #    print(individuos[i])
+        
 
         #crossover
         individuos=crossoverCiclico(individuos)
-        #print("\n\033[91mDESPUES DE CROSSOVER\033[0m")
-        #for i in range(numIndividuos):
-        #    print(individuos[i])
+        
         
         #mutacion
 
-        muta = random.randint(1,100)
+        muta = random.randint(1,100)   #implementamos la mutacion mixta
         if muta <= 50:
             individuos=mutacionSwap(individuos) 
         else:
             individuos=mutacionInversion(individuos)
 
+
+        #Descomentar para usar las distintas mutaciones
+
         #individuos=mutacionSwap(individuos)
-        #individuos=mutacionAdjointSwap(individuos) #pesimos resultados wtf
+        #individuos=mutacionAdjointSwap(individuos)  
         #individuos=mutacionInversion(individuos)
         
-        #print("\n\033[91mDESPUES DE MUTACION\033[0m")
-        #for i in range(numIndividuos):
-        #    print(individuos[i])
+        
     realizarTabla()
 
 def crossoverCiclico(individuos):
@@ -139,7 +124,6 @@ def crossoverCiclico(individuos):
             indPadre=0
             aux=-1
 
-            #print("\nINICIO CROSSOVER\npadre1: ",padre1,"\npadre2: ",padre2)
             while padre1[0]!=aux:
 
                 indPadre=padre1.index(padre2[indPadre]) #obtengo la posicion del (contenido del padre 2) en el padre 1
@@ -149,20 +133,12 @@ def crossoverCiclico(individuos):
                 hijo2[indPadre]=padre2[indPadre] #asigno el contenido del padre 2 en la posicion actual en el hijo 2
 
                 aux=padre2[indPadre]
-                #print("mientras crossover ")
-                #print(hijo1)
-                #print(hijo2)
-            #print("\n\033[91mfin del crossover\033[0m")
-            #print(hijo1)
-            #print(hijo2)
 
             for i in range(numGenes):
                 if hijo1[i]==-1:
                     hijo1[i]=padre2[i]
                     hijo2[i]=padre1[i]
-            #print("\n\033[91mdespues de rellenar\033[0m")
-            #print(hijo1)
-            #print(hijo2)
+
             individuos[indice]= hijo1.copy()
             individuos[indice+1]= hijo2.copy()
         indice+=2
@@ -303,17 +279,6 @@ def realizarTabla():
     
     with pd.ExcelWriter(file_path) as writer:
         df_individuos.to_excel(writer, sheet_name = 'Individuos', index = False)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
