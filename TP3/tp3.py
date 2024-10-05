@@ -63,7 +63,7 @@ numGenes = 24 #uno por cada capital
 numIndividuos = 50 
 probCrossover = 0.75
 probMutacion = 0.1
-ciclos = 500
+ciclos = 10
 
 
 def algoritmoGenetico():
@@ -87,6 +87,7 @@ def algoritmoGenetico():
         totalObjetivo = sum(valObj)
         for i in range(numIndividuos):
             valFitness[i]= round(1-(valObj[i]/totalObjetivo), 5) #ver que onda TODO
+           
         #print("\n\033[91mEl valor fitness es \033[0m\n",valFitness)
         #print("\n\033[92mAverage fitness for this cycle:\033[0m", sum(valFitness) / len(valFitness))
         
@@ -106,15 +107,15 @@ def algoritmoGenetico():
         
         #mutacion
 
-        #muta = random.randint(1,100)
-        #if muta <= 50:
-        #    individuos=mutacionSwap(individuos)
-        #else:
-        #    individuos=mutacionInversion(individuos)
+        muta = random.randint(1,100)
+        if muta <= 50:
+            individuos=mutacionSwap(individuos) 
+        else:
+            individuos=mutacionInversion(individuos)
 
         #individuos=mutacionSwap(individuos)
         #individuos=mutacionAdjointSwap(individuos) #pesimos resultados wtf
-        individuos=mutacionInversion(individuos)
+        #individuos=mutacionInversion(individuos)
         
         #print("\n\033[91mDESPUES DE MUTACION\033[0m")
         #for i in range(numIndividuos):
