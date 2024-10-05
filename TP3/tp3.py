@@ -192,20 +192,20 @@ def inicializarPoblacion(): #Recorremos el arreglo y lo cargamos con una ruta al
         individuos[i] = random.sample(range(numGenes), numGenes)  # Generamos una lista de números únicos del 0 al 23
     return individuos
 
-def mutacionSwap(individuos):    #intercambia dos genes al azar
+def mutacionSwap(individuos):
     for i in range(numIndividuos):
         aux=random.randint(1,100)
         if(aux<=probMutacion*100):
             pos1=random.randint(0,numGenes-1)
             pos2=random.randint(0,numGenes-1)
-            while pos1==pos2:        #para que no se intercambien el mismo gen por si mismo
+            while pos1==pos2:
                 pos2=random.randint(0,numGenes-1)
             aux=individuos[i][pos1]
             individuos[i][pos1]=individuos[i][pos2]
             individuos[i][pos2]=aux
     return individuos
 
-def mutacionAdjointSwap(individuos):   #intercambia dos genes adyacentes
+def mutacionAdjointSwap(individuos):
     for i in range(numIndividuos):
         aux=random.randint(1,100)
         if(aux<=probMutacion*100):
@@ -219,7 +219,7 @@ def mutacionAdjointSwap(individuos):   #intercambia dos genes adyacentes
             individuos[i][pos2]=aux
     return individuos
 
-def mutacionInversion(individuos):     
+def mutacionInversion(individuos):
     for i in range(numIndividuos):
         aux=random.randint(1,100)
         if(aux<=probMutacion*100):
