@@ -52,7 +52,7 @@ numGenes = 24 #uno por cada capital
 numIndividuos = 50 
 probCrossover = 0.75
 probMutacion = 0.1
-ciclos = 10
+ciclos = 200
 
 
 def algoritmoGenetico():
@@ -70,8 +70,8 @@ def algoritmoGenetico():
         for i in range(numIndividuos):
             valObj[i]=calcularDistancia(individuos[i]) #le paso un orden de recorrido
        
-        print("\n\033[92mAverage distance for this cycle:\033[0m", sum(valObj) / len(valObj))
-        
+        print("\n\033[92mDistancia promedio para el ciclo:\033[0m", sum(valObj) / len(valObj))
+        print("\n\033[92mDistancia minima global:\033[0m", valorMenorGlobal)
         #calculo del valor fitness
         totalObjetivo = sum(valObj)
         for i in range(numIndividuos):
@@ -91,18 +91,18 @@ def algoritmoGenetico():
         
         #mutacion
 
-        muta = random.randint(1,100)   #implementamos la mutacion mixta
-        if muta <= 50:
-            individuos=mutacionSwap(individuos) 
-        else:
-            individuos=mutacionInversion(individuos)
+        # muta = random.randint(1,100)   #implementamos la mutacion mixta
+        # if muta <= 50:
+        #     individuos=mutacionSwap(individuos) 
+        # else:
+        #     individuos=mutacionInversion(individuos)
 
 
         #Descomentar para usar las distintas mutaciones
 
         #individuos=mutacionSwap(individuos)
         #individuos=mutacionAdjointSwap(individuos)  
-        #individuos=mutacionInversion(individuos)
+        individuos=mutacionInversion(individuos)
         
         
     realizarTabla()
@@ -146,20 +146,20 @@ def crossoverCiclico(individuos):
 
 def torneo(individuos,valFitness):
 
-    N = 8  #cantidad de individuos a participar de cada torneo 
+    N = 20  #cantidad de individuos a participar de cada torneo 
     hijos = [[0 for _ in range(numGenes)]for _ in range(numIndividuos)]
     
     for j in range (numIndividuos):
-        candidatos = [0 for i in range(N)] #arreglo de indices de los 4 individuos a examinar
+        candidatos = [0 for i in range(N)] #arreglo de indices de los 20 individuos a examinar
         for i in range(N):
-            candidatos[i]=random.randint(0,numIndividuos-1) #Llenar el arreglo de cantidatos con 4 indices al azar
-        valorMayor = 0 #valor fitness del mayor individuo de los 4
+            candidatos[i]=random.randint(0,numIndividuos-1) #Llenar el arreglo de cantidatos con 20 indices al azar
+        valorMayor = 0 #valor fitness del mayor individuo de los 20
         indiceMayor=0
         for i in range(N):
             if(valFitness[candidatos[i]] > valorMayor):
                 valorMayor = valFitness[candidatos[i]]
                 indiceMayor = candidatos[i]
-        hijos[j]=individuos[indiceMayor].copy()  #selecciona al mejor individuo de los 4 y lo guarda en hijos
+        hijos[j]=individuos[indiceMayor].copy()  #selecciona al mejor individuo de los 20 y lo guarda en hijos
     return hijos
 
 def inicializarPoblacion(): #Recorremos el arreglo y lo cargamos con una ruta al azar
@@ -272,9 +272,8 @@ def realizarTabla():
     current_time = datetime.now().strftime("%H-%M-%S") #para no tener que borrar el excel cada vez
     df_individuos = pd.DataFrame(datos_tabla)
     
-    # Get the directory of the current script
     current_dir = os.path.dirname(__file__)
-    # Construct the file path
+    # Construir el path del archivo
     file_path = os.path.join(current_dir, f"TablaAG_{current_time}.xlsx")
     
     with pd.ExcelWriter(file_path) as writer:
@@ -335,7 +334,9 @@ while op !="S":
        dibujarMapa(ordenMin)
 
     if op == "C":
+        valorMenorGlobal = 99999 #Reseteo el valor menor global para cada corrida del AG
         algoritmoGenetico()
+        dibujarMapa(menorGlobal)
 
     print("_"*90+"\n")
     print("¿Desea ejecutar otra opción?")
