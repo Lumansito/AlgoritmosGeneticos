@@ -216,10 +216,12 @@ def mutacionInversion(individuos):
     return individuos
 
 #guardar valores por ciclo
-valorMenorGlobal = 99999
-valorMayorGlobal = 0
-menorGlobal = [0]*numGenes
-mayorGlobal = [0]*numGenes
+def resetearValoresAlgGeneticos():
+    global valorMenorGlobal, valorMayorGlobal, menorGlobal, mayorGlobal
+    valorMenorGlobal = 99999
+    valorMayorGlobal = 0
+    menorGlobal = [0]*numGenes
+    mayorGlobal = [0]*numGenes
 
 def inicializarValoresCorridas():
     global minimoFO, maximoFO, cromosomasMaximos, cromosomasMinimos, promedioValObjPorCorrida, acumCorridas
@@ -334,7 +336,7 @@ while op !="S":
        dibujarMapa(ordenMin)
 
     if op == "C":
-        valorMenorGlobal = 99999 #Reseteo el valor menor global para cada corrida del AG
+        resetearValoresAlgGeneticos() #Reseteo el valor de los min y max cada corrida del AG
         algoritmoGenetico()
         dibujarMapa(menorGlobal)
 
